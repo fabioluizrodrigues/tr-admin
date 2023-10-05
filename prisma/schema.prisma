@@ -1,0 +1,87 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum FLAG_SIM_NAO {
+  SIM
+  NAO
+}
+
+model Pessoa {
+  id          String       @id @default(uuid())
+  nome_razao  String
+  cnpj_cpf    String       @unique
+  ie_rg       String
+  cep         String
+  endereco    String
+  bairro      String
+  numero      String
+  municipio   String
+  uf          String
+  telefone    String
+  celular     String
+  email       String
+  observacoes String
+  ativo       FLAG_SIM_NAO
+  caixas      Conta[]
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+}
+
+model Veiculo {
+  id            String       @id @default(uuid())
+  placa         String       @unique @db.VarChar(7)
+  renavam       String       @db.VarChar(20)
+  nr_eixos      Int          @db.Integer
+  ano_fabrica   Int          @db.Integer
+  ano_modelo    Int          @db.Integer
+  ano_exercicio Int          @db.Integer
+  marca         String       @db.VarChar(150)
+  modelo        String       @db.VarChar(150)
+  cor           String       @db.VarChar(100)
+  ativo         FLAG_SIM_NAO
+  observacoes   String?      @db.VarChar(255)
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+}
+
+enum ContaTipo {
+  CAIXA
+  ADMIN
+}
+
+model Conta {
+  id             String           @id @default(uuid())
+  pessoa         Pessoa           @relation(fields: [pessoa_id], references: [id])
+  pessoa_id      String           @db.VarChar(100)
+  tipo           ContaTipo        @default(CAIXA)
+  descricao      String?          @db.Text
+  ativo          FLAG_SIM_NAO
+  ContaHistorico ContaHistorico[]
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+}
+
+enum ContaHistoricoTipo {
+  CREDITO
+  DEBITO
+}
+
+model ContaHistorico {
+  id        String             @id @default(cuid()) @db.VarChar(100)
+  conta     Conta              @relation(fields: [conta_id], references: [id])
+  conta_id  String             @db.VarChar(100)
+  tipo      ContaHistoricoTipo @default(CREDITO)
+  descricao String?            @db.Text
+  valor_doc Decimal            @default(0) @db.Decimal(12, 2)
+  createdAt DateTime           @default(now())
+  updatedAt DateTime           @updatedAt
+}

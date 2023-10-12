@@ -8,7 +8,7 @@ import { VeiculoSchema } from '@/schemas/VeiculoSchema'
 import * as masks from '@/lib/masks';
 import { ChevronLeft, Save } from 'lucide-react'
 import { useRouter } from 'next/navigation';
-import { FLAG_SIM_NAO } from '@prisma/client';
+import { FLAG_SIM_NAO, VeiculoTipo } from '@prisma/client';
 
 
 interface VeiculoFormPostProps {
@@ -42,7 +42,7 @@ const VeiculoFormPost: FC<VeiculoFormPostProps> = ({ submit, isEditing, initialV
         <form onSubmit={handleSubmit(submit)} className=''>
             <div className='grid md:grid-cols-8 lg:grid-cols-8 gap-2 card w-full bg-white shadow px-5 py-2'>
 
-                <div className="form-control w-full md:col-span-2">
+                <div className="form-control w-full md:col-span-1">
                     <label className="label">
                         <span className="label-text">Placa</span>
                         {/* <span className="label-text-alt">Top Right label</span> */}
@@ -73,6 +73,26 @@ const VeiculoFormPost: FC<VeiculoFormPostProps> = ({ submit, isEditing, initialV
                     />
                     <label className="label">
                         {errors.renavam && <span className="label-text-alt text-red-500">{errors.renavam.message}</span>}
+                        {/* <span className="label-text-alt">Bottom Right label</span> */}
+                    </label>
+                </div>
+
+                <div className="form-control w-full md:col-span-1">
+                    <label className="label">
+                        <span className="label-text">Tipo</span>
+                        {/* <span className="label-text-alt">Top Right label</span> */}
+                    </label>
+                    <select
+                        {...register('tipo')}
+                        className="select select-bordered"
+                    >
+                        <option value={''}></option>
+                        <option value={VeiculoTipo.CAMINHAO}>Caminhão</option>
+                        <option value={VeiculoTipo.CARRETA}>Carreta</option>
+                        <option value={VeiculoTipo.CARRO}>Carro</option>
+                    </select>
+                    <label className="label">
+                        {errors.tipo && <span className="label-text-alt text-red-500">{errors.tipo.message}</span>}
                         {/* <span className="label-text-alt">Bottom Right label</span> */}
                     </label>
                 </div>
@@ -146,7 +166,7 @@ const VeiculoFormPost: FC<VeiculoFormPostProps> = ({ submit, isEditing, initialV
                 </div>
 
 
-                <div className="form-control w-full md:col-span-2">
+                <div className="form-control w-full md:col-span-1">
                     <label className="label">
                         <span className="label-text">Cor</span>
                         {/* <span className="label-text-alt">Top Right label</span> */}
@@ -197,25 +217,6 @@ const VeiculoFormPost: FC<VeiculoFormPostProps> = ({ submit, isEditing, initialV
                     </label>
                 </div>
 
-                <div className="form-control w-full  md:col-span-3"></div>
-
-                <div className="form-control w-full md:col-span-7">
-                    <label className="label">
-                        <span className="label-text">Observações</span>
-                        {/* <span className="label-text-alt">Top Right label</span> */}
-                    </label>
-                    <input
-                        type="text"
-                        {...register('observacoes')}
-                        placeholder=""
-                        className="input input-bordered w-full"
-                    />
-                    <label className="label">
-                        {errors.observacoes && <span className="label-text-alt text-red-500">{errors.observacoes.message}</span>}
-                        {/* <span className="label-text-alt">Bottom Right label</span> */}
-                    </label>
-                </div>
-
                 <div className="form-control w-full md:col-span-1">
                     <label className="label">
                         <span className="label-text">Ativo</span>
@@ -230,6 +231,25 @@ const VeiculoFormPost: FC<VeiculoFormPostProps> = ({ submit, isEditing, initialV
                     </select>
                     <label className="label">
                         {errors.ativo && <span className="label-text-alt text-red-500">{errors.ativo.message}</span>}
+                        {/* <span className="label-text-alt">Bottom Right label</span> */}
+                    </label>
+                </div>
+
+                <div className="form-control w-full  md:col-span-3"></div>
+
+                <div className="form-control w-full md:col-span-8">
+                    <label className="label">
+                        <span className="label-text">Observações</span>
+                        {/* <span className="label-text-alt">Top Right label</span> */}
+                    </label>
+                    <input
+                        type="text"
+                        {...register('observacoes')}
+                        placeholder=""
+                        className="input input-bordered w-full"
+                    />
+                    <label className="label">
+                        {errors.observacoes && <span className="label-text-alt text-red-500">{errors.observacoes.message}</span>}
                         {/* <span className="label-text-alt">Bottom Right label</span> */}
                     </label>
                 </div>

@@ -14,12 +14,12 @@ interface IPessoa {
     uf: string;
 }
 
-interface ISelectPessoaProps {
+interface ISelectFreteProps {
     name: string;
     isediting: boolean;
 }
 
-const SelectPessoa: React.FC<ISelectPessoaProps> = (props) => {
+const SelectFrete: React.FC<ISelectFreteProps> = (props) => {
 
     const { register, setValue, getValues } = useFormContext()
 
@@ -53,6 +53,18 @@ const SelectPessoa: React.FC<ISelectPessoaProps> = (props) => {
         setPessoas([]);
     }
 
+    const handleKeyDown = async (event: any) => {
+        if (event.key === 'Enter') {
+            await loadPessoas();
+            selectRef.current?.focus();
+        }
+        if (event.key === 'Escape') {
+            clearPessoas();
+            setValue(props.name, '');
+            inputRef.current?.focus();
+        }
+    };
+
     const handleSelectItem = (event: any) => {
         setValue(props.name, event.target.value, {
             shouldValidate: true,
@@ -61,24 +73,6 @@ const SelectPessoa: React.FC<ISelectPessoaProps> = (props) => {
         });
     }
 
-    const handleKeyDown = async (event: any) => {
-        if (event.key === 'Enter') {
-            await loadPessoas();
-            selectRef.current?.focus();
-        }
-
-        if (event.key === 'Escape') {
-            clearPessoas();
-            setValue(props.name, undefined);
-            inputRef.current?.focus();
-        }
-
-        if (event.type === 'dblclick') {
-            await loadPessoas();
-            selectRef.current?.focus();
-        }
-    };
-
     return (
         <div className='flex join'>
             <input
@@ -86,7 +80,6 @@ const SelectPessoa: React.FC<ISelectPessoaProps> = (props) => {
                 className='input input-bordered join-item w-28'
                 onChange={e => setPesquisa(e.target.value)}
                 onKeyDown={handleKeyDown}
-                onDoubleClick={handleKeyDown}
                 ref={inputRef}
             />
             <input
@@ -111,4 +104,4 @@ const SelectPessoa: React.FC<ISelectPessoaProps> = (props) => {
     )
 };
 
-export default SelectPessoa;
+export default SelectFrete;

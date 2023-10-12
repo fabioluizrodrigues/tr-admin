@@ -22,6 +22,10 @@ const VeiculoCard: FC<VeiculoCardProps> = ({ veiculo }) => {
                         <div className='text-sm font-semibold overflow-hidden text-ellipsis'>{veiculo?.renavam}</div>
                     </div>
                     <div className='md:col-span-1'>
+                        <div className='text-xs font-extralight'>Tipo</div>
+                        <div className='text-sm font-semibold overflow-hidden text-ellipsis'>{veiculo?.tipo}</div>
+                    </div>
+                    <div className='md:col-span-1'>
                         <div className='text-xs font-extralight'>Qtde Eixos</div>
                         <div className='text-sm font-semibold overflow-hidden text-ellipsis'>{veiculo?.nr_eixos}</div>
                     </div>
@@ -37,10 +41,7 @@ const VeiculoCard: FC<VeiculoCardProps> = ({ veiculo }) => {
                         <div className='text-xs'>Ano Exercício</div>
                         <div className='text-base overflow-hidden text-ellipsis'>{veiculo?.ano_exercicio}</div>
                     </div>
-                    <div className='md:col-span-1'>
-                        <div className='text-xs'>Cor</div>
-                        <div className='text-base overflow-hidden text-ellipsis'>{veiculo?.cor}</div>
-                    </div>
+
                     <div className="md:col-span-1">
                         <Link href={`/veiculo/${veiculo.id}`} className=' btn btn-sm btn-ghost'>
                             Detalhar...
@@ -48,7 +49,15 @@ const VeiculoCard: FC<VeiculoCardProps> = ({ veiculo }) => {
                     </div>
                 </div>
 
-                <div className='grid grid-cols-1 md:grid-cols-8 lg:grid-cols-8 gap-3 px-2'>
+                <div className='grid grid-cols-1 md:grid-cols-8 lg:grid-cols-8 gap-3 px-2 py-2'>
+                    <div className='md:col-span-1'>
+                        <div className='text-xs'>Cor</div>
+                        <div className='text-base overflow-hidden text-ellipsis'>{veiculo?.cor}</div>
+                    </div>
+                    <div className='md:col-span-1'>
+                        <div className='text-xs'>Ativo</div>
+                        <div className='text-base overflow-hidden text-ellipsis'>{veiculo?.ativo}</div>
+                    </div>
                     <div className='md:col-span-2'>
                         <div className='text-xs'>Marca</div>
                         <div className='text-base overflow-hidden text-ellipsis'>{veiculo?.marca}</div>
@@ -56,10 +65,6 @@ const VeiculoCard: FC<VeiculoCardProps> = ({ veiculo }) => {
                     <div className='md:col-span-2'>
                         <div className='text-xs'>Modelo</div>
                         <div className='text-base overflow-hidden text-ellipsis'>{veiculo?.modelo}</div>
-                    </div>
-                    <div className='md:col-span-4'>
-                        <div className='text-xs'>Observações</div>
-                        <div className='text-base overflow-hidden text-ellipsis'>{veiculo?.observacoes}</div>
                     </div>
                 </div>
 

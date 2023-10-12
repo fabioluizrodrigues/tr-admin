@@ -32,14 +32,23 @@ model Pessoa {
   observacoes String
   ativo       FLAG_SIM_NAO
   caixas      Conta[]
+  motoristas  Frete[]      @relation("MotoristasPessoas")
+  clientes    Frete[]      @relation("ClientesPessoas")
   createdAt   DateTime     @default(now())
   updatedAt   DateTime     @updatedAt
+}
+
+enum VeiculoTipo {
+  CAMINHAO
+  CARRETA
+  CARRO
 }
 
 model Veiculo {
   id            String       @id @default(uuid())
   placa         String       @unique @db.VarChar(7)
   renavam       String       @db.VarChar(20)
+  tipo          VeiculoTipo
   nr_eixos      Int          @db.Integer
   ano_fabrica   Int          @db.Integer
   ano_modelo    Int          @db.Integer
@@ -48,6 +57,10 @@ model Veiculo {
   modelo        String       @db.VarChar(150)
   cor           String       @db.VarChar(100)
   ativo         FLAG_SIM_NAO
+  cavalos       Frete[]      @relation("VeiculosCavalos")
+  reboque1      Frete[]      @relation("VeiculosReboques1")
+  reboque2      Frete[]      @relation("VeiculosReboques2")
+  reboque3      Frete[]      @relation("VeiculosReboques3")
   observacoes   String?      @db.VarChar(255)
   createdAt     DateTime     @default(now())
   updatedAt     DateTime     @updatedAt
@@ -66,6 +79,7 @@ model Conta {
   descricao      String?          @db.Text
   ativo          FLAG_SIM_NAO
   ContaHistorico ContaHistorico[]
+  fretes         Frete[]
   createdAt      DateTime         @default(now())
   updatedAt      DateTime         @updatedAt
 }
@@ -84,4 +98,45 @@ model ContaHistorico {
   valor_doc Decimal            @default(0) @db.Decimal(12, 2)
   createdAt DateTime           @default(now())
   updatedAt DateTime           @updatedAt
+}
+
+enum FreteSituacao {
+  ABERTO
+  QUITADO
+}
+
+model Frete {
+  id            String        @id @default(cuid()) @db.VarChar(100)
+  data_doc      DateTime      @default(now())
+  nr_doc String @db.VarChar(60)
+  nr_ordem String @db.VarChar(60)
+  conta         Conta         @relation(fields: [conta_id], references: [id])
+  conta_id      String        @db.VarChar(100)
+  motorista     Pessoa        @relation("MotoristasPessoas", fields: [motorista_id], references: [id])
+  motorista_id  String        @db.VarChar(100)
+  cavalo        Veiculo       @relation("VeiculosCavalos", fields: [cavalo_id], references: [id])
+  cavalo_id     String        @db.VarChar(100)
+  reboque1      Veiculo       @relation("VeiculosReboques1", fields: [reboque1_id], references: [id])
+  reboque1_id   String        @db.VarChar(100)
+  reboque2      Veiculo       @relation("VeiculosReboques2", fields: [reboque2_id], references: [id])
+  reboque2_id   String        @db.VarChar(100)
+  reboque3      Veiculo       @relation("VeiculosReboques3", fields: [reboque3_id], references: [id])
+  reboque3_id   String        @db.VarChar(100)
+  cliente       Pessoa        @relation("ClientesPessoas", fields: [cliente_id], references: [id])
+  cliente_id    String        @db.VarChar(100)
+  local_embarque String       @db.VarChar(200)
+  local_descarga String       @db.VarChar(200)
+  vlr_tarifa    Decimal       @db.Decimal(12, 2)
+  peso_saida    Decimal       @db.Decimal(12, 2)
+  vlr_bruto     Decimal       @db.Decimal(12, 2)
+  vlr_pedagio   Decimal       @db.Decimal(12, 2)
+  peso_chegada  Decimal       @db.Decimal(12, 2)
+  vlr_quebra    Decimal       @db.Decimal(12, 2)
+  vlr_desconto  Decimal       @db.Decimal(12, 2)
+  vlr_liquido   Decimal       @db.Decimal(12, 2)
+  perc_comissao Decimal       @db.Decimal(12, 2)
+  vlr_comissao  Decimal       @db.Decimal(12, 2)
+  situacao      FreteSituacao
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
 }

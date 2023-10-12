@@ -22,6 +22,10 @@ const VeiculoCardDetail: FC<VeiculoCardDetailProps> = ({ veiculo }) => {
                         <div className='text-sm font-semibold overflow-hidden text-ellipsis'>{veiculo?.renavam}</div>
                     </div>
                     <div className='md:col-span-1'>
+                        <div className='text-xs'>Tipo</div>
+                        <div className='text-base overflow-hidden text-ellipsis'>{veiculo?.tipo}</div>
+                    </div>
+                    <div className='md:col-span-1'>
                         <div className='text-xs font-extralight'>Qtde Eixos</div>
                         <div className='text-sm font-semibold overflow-hidden text-ellipsis'>{veiculo?.nr_eixos}</div>
                     </div>
@@ -41,13 +45,9 @@ const VeiculoCardDetail: FC<VeiculoCardDetailProps> = ({ veiculo }) => {
                         <div className='text-xs'>Cor</div>
                         <div className='text-base overflow-hidden text-ellipsis'>{veiculo?.cor}</div>
                     </div>
-                    <div className='md:col-span-1'>
-                        <div className='text-xs'>Ativo</div>
-                        <div className='text-base overflow-hidden text-ellipsis'>{veiculo?.ativo}</div>
-                    </div>
                 </div>
 
-                <div className='grid grid-cols-1 md:grid-cols-8 lg:grid-cols-8 gap-3 '>
+                <div className='grid grid-cols-1 md:grid-cols-8 lg:grid-cols-8 gap-3 border-b pb-2'>
                     <div className='md:col-span-2'>
                         <div className='text-xs'>Marca</div>
                         <div className='text-base overflow-hidden text-ellipsis'>{veiculo?.marca}</div>
@@ -56,12 +56,18 @@ const VeiculoCardDetail: FC<VeiculoCardDetailProps> = ({ veiculo }) => {
                         <div className='text-xs'>Modelo</div>
                         <div className='text-base overflow-hidden text-ellipsis'>{veiculo?.modelo}</div>
                     </div>
-                    <div className='md:col-span-4'>
+                    <div className='md:col-span-1'>
+                        <div className='text-xs'>Ativo</div>
+                        <div className='text-base overflow-hidden text-ellipsis'>{veiculo?.ativo}</div>
+                    </div>
+                </div>
+
+                <div className='grid grid-cols-1 md:grid-cols-8 lg:grid-cols-8 gap-3 '>
+                    <div className='md:col-span-8'>
                         <div className='text-xs'>Observações</div>
                         <div className='text-base overflow-hidden text-ellipsis'>{veiculo?.observacoes}</div>
                     </div>
                 </div>
-
             </div>
         </div>
     )

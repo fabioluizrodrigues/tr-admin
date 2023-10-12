@@ -13,31 +13,30 @@ export async function GET(req: Request) {
     const pageSkip = (page) ? (page / limit) + 1 : 0;
  
     try {
-        const pessoas = await db.pessoa.findMany({
+        const veiculos = await db.veiculo.findMany({
             select: {
                 id: true,
-                nome_razao: true,
-                cnpj_cpf: true,
-                municipio: true,
-                uf: true
+                placa: true,
+                tipo: true,
+                nr_eixos: true,
             },
             skip: pageSkip,
             take: limit,            
             where: {
                 ...(filter ? {
                     OR : [
-                        {nome_razao: { contains: filter, mode: 'insensitive' }},
-                        {cnpj_cpf: { startsWith: filter }},
-                        {municipio: { contains: filter, mode: 'insensitive' }},
-                        {uf: { equals: filter }},
+                        {placa: { contains: filter, mode: 'insensitive' }},
+                        //{cnpj_cpf: { startsWith: filter }},
+                        //{municipio: { contains: filter, mode: 'insensitive' }},
+                        //{uf: { equals: filter }},
                     ]
                 } : {}),
             },            
             orderBy: {
-                nome_razao: 'asc'
+                placa: 'asc'
             },
         });
-        return NextResponse.json(pessoas, { status: StatusCodes.OK });
+        return NextResponse.json(veiculos, { status: StatusCodes.OK });
     } catch (error) {
         return NextResponse.json({ message: 'Não foi possivel carregar os registros.'}, { status: StatusCodes.BAD_REQUEST});
     }

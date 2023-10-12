@@ -43,7 +43,7 @@ const masker = ({
   })();
 
 const dateFormatClient = "dd/MM/yyyy";
-const dateFormatApi = "yyyy-MM-dd";
+const dateFormatApi = "yyyy-MM-dd hh:mm";
 
 export const dateMask = masker({
   masked: {
@@ -79,6 +79,7 @@ export const dateMask = masker({
     if (!value) {
       return value;
     }
+    console.log(value)
     const date = dateFns.parse(value, dateFormatClient, new Date());
     return dateFns.format(date, dateFormatApi);
   },
@@ -166,7 +167,7 @@ export const phoneMask = masker({
 
 export const currencyMask = masker({
   masked: {
-    mask: "R$ num{,}cents",
+    mask: "num{,}cents",
     blocks: {
       num: {
         mask: Number,

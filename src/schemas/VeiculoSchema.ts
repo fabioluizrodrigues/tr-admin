@@ -1,7 +1,7 @@
 import { isValidLicensePlate } from '@brazilian-utils/brazilian-utils';
 import { z } from 'zod';
 import * as masks from "@/lib/masks";
-import { FLAG_SIM_NAO } from '@prisma/client';
+import { FLAG_SIM_NAO, VeiculoTipo } from '@prisma/client';
 
 export const VeiculoSchema = z.object({
     placa: z.string()
@@ -11,22 +11,28 @@ export const VeiculoSchema = z.object({
         .transform<String>((value) => value.toUpperCase()),
     renavam: z.string()
         .nonempty('Informe o renavam.'),
-    nr_eixos: z.coerce.string({
-        required_error: 'Informe os eixos.',
-        invalid_type_error: 'Valor inválido.'
-    }),
-    ano_fabrica: z.coerce.number({
-        required_error: 'Informe o ano fábrica.',
-        invalid_type_error: 'Valor inválido.'
-    }),
-    ano_modelo: z.coerce.number({
-        required_error: 'Informe o ano modelo.',
-        invalid_type_error: 'Valor inválido.'
-    }),
-    ano_exercicio: z.coerce.number({
-        required_error: 'Informe o exercício (DETRAN).',
-        invalid_type_error: 'Valor inválido.'
-    }),
+    tipo: z.enum([VeiculoTipo.CAMINHAO, VeiculoTipo.CARRETA, VeiculoTipo.CARRO], {
+        errorMap: (issue, _ctx) => {
+          switch (issue.code) {
+            case 'invalid_type':
+              return { message: 'Selecione o tipo.' };
+            case 'invalid_enum_value':
+              return { message: 'Selecione o tipo.' };
+            default:
+              return { message: 'Selecione o tipo' };
+          }
+        },
+      }),
+    nr_eixos: z.coerce.string().nonempty('Informe eixos'),
+    ano_fabrica: z.coerce.number()
+        .min(1900,'Informe ano fab.')
+        .max(3000,'Informe ano fab.'),
+    ano_modelo: z.coerce.number()
+        .min(1900,'Informe ano mod.')
+        .max(3000,'Informe ano mod.'),
+    ano_exercicio: z.coerce.number()
+        .min(1900,'Informe ano exer.')
+        .max(3000,'Informe ano exer.'),
     marca: z.string()
         .nonempty('Informe a marca.')
         .transform<String>((value) => value.toUpperCase()),

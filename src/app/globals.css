@@ -2,3 +2,44 @@
 @tailwind components;
 @tailwind utilities;
 
+.label {
+    padding-top: 2px;
+    padding-bottom: 2px;
+}
+
+.input {
+    border-radius: 0px;
+    padding-left: 10px;
+    padding-right: 10px;
+    height:40px;
+}
+
+/* .input-disabled, .input:disabled, .input[disabled] {
+    cursor: auto;
+    border-color: hsl(var(--bc) / var(--tw-border-opacity)); 
+    background-color: hsl(var(--b1) / var(--tw-bg-opacity));
+} */
+
+.select {
+    border-radius: 0px;
+    padding-left: 10px;
+    padding-right: 10px;
+    height:40px;
+    min-height: 40px;
+}
+
+.input:focus {
+    outline-style: solid;
+    outline-width: 0px;
+    outline-offset: 0px;
+    outline-color: hsl(var(--bc) / 0.2);
+    background-color: beige;
+}
+
+.select:focus {
+    outline-style: solid;
+    outline-width: 0px;
+    outline-offset: 0px;
+    outline-color: hsl(var(--bc) / 0.2);
+    background-color: beige;
+}

@@ -5,52 +5,51 @@ import axios from 'axios';
 import * as masks from '@/lib/masks';
 import { useQuery } from '@tanstack/react-query';
 import { useFormContext } from 'react-hook-form';
+import { ContaTipo, Pessoa } from '@prisma/client';
 
-interface IPessoa {
+interface IConta {
     id: string;
-    nome_razao: string;
-    cnpj_cpf: string;
-    municipio: string;
-    uf: string;
+    pessoa: Pessoa;
+    tipo: ContaTipo;
+    descricao: string;
 }
 
-interface ISelectPessoaProps {
+interface ISelectContaProps {
     name: string;
     isediting: boolean;
 }
 
-const SelectPessoa: React.FC<ISelectPessoaProps> = (props) => {
+const SelectConta: React.FC<ISelectContaProps> = (props) => {
 
     const { register, setValue, getValues } = useFormContext()
 
     const inputRef = useRef<HTMLInputElement>(null);
     const selectRef = useRef<HTMLSelectElement>(null);
 
-    const [initialPessoa, setInitialPessoa] = useState<IPessoa | undefined>(undefined);
+    const [initialConta, setInitialConta] = useState<IConta | undefined>(undefined);
     const [pesquisa, setPesquisa] = useState<string>('');
-    const [pessoas, setPessoas] = useState<IPessoa[]>([]);
+    const [contas, setContas] = useState<IConta[]>([]);
 
     const { error } = useQuery({
-        queryKey: ['initialPessoa',],
+        queryKey: ['initialConta',],
         queryFn: async () => {
-            const pessoa_id = getValues('pessoa_id');
-            const response = await axios.get(`/api/pessoa/list-select/${pessoa_id}`);
-            setInitialPessoa(response.data as IPessoa);
-            setPessoas(current => [...current, response.data as IPessoa]);
-
+            const conta_id = getValues('conta_id');
+            const response = await axios.get(`/api/conta/list-select/${conta_id}`);
+            setInitialConta(response.data as IConta);
+            setContas(current => [...current, response.data as IConta]);
             return response.data;
         },
-        enabled: (initialPessoa === undefined && props.isediting)
+        enabled: (initialConta === undefined && props.isediting)
     });
 
-    const loadPessoas = async () => {
-        axios.get('/api/pessoa/list-select', { params: { filter: pesquisa } }).then(function (response) {
-            setPessoas(response.data as IPessoa[]);
+    const loadContas = async () => {
+        axios.get('/api/conta/list-select', { params: { filter: pesquisa } }).then(function (response) {
+            setContas(response.data as IConta[]);
         });
     }
 
-    const clearPessoas = () => {
-        setPessoas([]);
+    const clearContas = () => {
+        setContas([]);
     }
 
     const handleSelectItem = (event: any) => {
@@ -63,19 +62,13 @@ const SelectPessoa: React.FC<ISelectPessoaProps> = (props) => {
 
     const handleKeyDown = async (event: any) => {
         if (event.key === 'Enter') {
-            await loadPessoas();
+            await loadContas();
             selectRef.current?.focus();
         }
-
         if (event.key === 'Escape') {
-            clearPessoas();
-            setValue(props.name, undefined);
+            clearContas();
+            setValue(props.name, '');
             inputRef.current?.focus();
-        }
-
-        if (event.type === 'dblclick') {
-            await loadPessoas();
-            selectRef.current?.focus();
         }
     };
 
@@ -86,7 +79,6 @@ const SelectPessoa: React.FC<ISelectPessoaProps> = (props) => {
                 className='input input-bordered join-item w-28'
                 onChange={e => setPesquisa(e.target.value)}
                 onKeyDown={handleKeyDown}
-                onDoubleClick={handleKeyDown}
                 ref={inputRef}
             />
             <input
@@ -98,12 +90,12 @@ const SelectPessoa: React.FC<ISelectPessoaProps> = (props) => {
                 onChange={e => handleSelectItem(e)}
                 onKeyDown={handleKeyDown}
                 className="select select-bordered  join-item w-full"
-                value={initialPessoa?.id}
+                value={initialConta?.id}
             >
                 <option value=''></option>
-                {pessoas.map(pessoa => (
-                    <option key={pessoa.id} value={pessoa.id} >
-                        {pessoa.nome_razao} - ({masks.cpfOrCnpjMask.mask(String(pessoa.cnpj_cpf))}) - {pessoa.municipio}/{pessoa.uf}
+                {contas.map(conta => (
+                    <option key={conta.id} value={conta.id} >
+                        {conta.pessoa.nome_razao} - ({masks.cpfOrCnpjMask.mask(String(conta.pessoa.cnpj_cpf))}) - {conta.pessoa.municipio}/{conta.pessoa.uf}
                     </option>
                 ))}
             </select>
@@ -111,4 +103,4 @@ const SelectPessoa: React.FC<ISelectPessoaProps> = (props) => {
     )
 };
 
-export default SelectPessoa;
+export default SelectConta;

@@ -20,6 +20,7 @@ export async function POST(req: Request) {
             data: {
                 placa: body.placa,
                 renavam: body.renavam,
+                tipo: body.tipo,
                 nr_eixos: Number(body.nr_eixos),
                 ano_fabrica: Number(body.ano_fabrica),
                 ano_modelo: Number(body.ano_modelo),

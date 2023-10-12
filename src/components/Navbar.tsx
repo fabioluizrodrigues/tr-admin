@@ -13,6 +13,7 @@ const Navbar = () => {
                     <Link href='/pessoa' className='btn btn-ghost'>Pessoas</Link>
                     <Link href='/veiculo' className='btn btn-ghost'>Veículos</Link>
                     <Link href='/conta' className='btn btn-ghost'>Contas</Link>
+                    <Link href='/frete' className='btn btn-ghost'>Fretes</Link>
                 </div>
             </div>
         </div>

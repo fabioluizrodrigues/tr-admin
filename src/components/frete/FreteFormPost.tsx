@@ -11,9 +11,8 @@ import { useRouter } from 'next/navigation';
 import SelectConta from '../conta/SelectConta';
 import SelectPessoa from '../pessoa/SelectPessoa';
 import SelectVeiculo from '../veiculo/SelectVeiculo';
-
-import { DevTool } from "@hookform/devtools";
-
+import { FreteCalc, TFreteCalc } from '../../lib/frete-calculos';
+import { formatCurrency } from '@brazilian-utils/brazilian-utils';
 
 interface FreteFormPostProps {
     submit: SubmitHandler<FreteFormInput>;
@@ -37,15 +36,59 @@ const FreteFormPost: FC<FreteFormPostProps> = ({ submit, isEditing, initialValue
         } : {}
     });
 
-    const { register, handleSubmit, formState: { errors }, control } = freteForm
+    const { register, handleSubmit, formState: { errors }, getValues, setValue, watch } = freteForm
 
-    function handleCancelButton(): void {
+    const handleCancelButton = () => {
         if (isEditing) {
             router.back();
         } else {
             router.push('/frete');
         }
     }
+
+    const handleFreteCalculo = () => {
+        let inputFreteCalc: TFreteCalc = {
+            vlr_tarifa: masks.currencyMask.transform(getValues('vlr_tarifa')),
+            peso_saida: masks.currencyMask.transform(getValues('peso_saida')),
+            vlr_bruto: 0,
+            vlr_pedagio: masks.currencyMask.transform(getValues('vlr_pedagio')),
+            peso_chegada: masks.currencyMask.transform(getValues('peso_chegada')),
+            vlr_quebra: masks.currencyMask.transform(getValues('vlr_quebra')),
+            vlr_desconto: masks.currencyMask.transform(getValues('vlr_desconto')),
+            vlr_liquido: 0,
+            perc_comissao: masks.currencyMask.transform(getValues('perc_comissao')),
+            vlr_comissao: 0,
+        }
+
+        let output = FreteCalc.calcula(inputFreteCalc);
+
+        //output.vlr_bruto = masks.phoneMask.mask(String(output.vlr_bruto));
+
+        console.log(output);
+
+        setValue('vlr_bruto', output.vlr_bruto, {
+            shouldDirty: true,
+            shouldTouch: true,
+            shouldValidate: true
+        });
+
+        setValue('vlr_liquido', output.vlr_liquido, {
+            shouldDirty: true,
+            shouldTouch: true,
+            shouldValidate: true
+        });
+
+        setValue('vlr_comissao', output.vlr_comissao, {
+            shouldDirty: true,
+            shouldTouch: true,
+            shouldValidate: true
+        });
+
+    }
+
+    const str_vlr_bruto = watch('vlr_bruto');
+    const str_vlr_liquido = watch('vlr_liquido');
+    const str_vlr_comissao = watch('vlr_comissao');
 
     return (
         <FormProvider {...freteForm}>
@@ -259,14 +302,12 @@ const FreteFormPost: FC<FreteFormPostProps> = ({ submit, isEditing, initialValue
                         <label className="label">
                             <span className="label-text">Valor Bruto</span>
                         </label>
+                        <input type="hidden" {...register('vlr_bruto')} />
                         <input
                             type="text"
-                            {...register('vlr_bruto', {
-                                disabled: true
-                            })}
-                            autoComplete='off'
-                            className="input input-bordered w-full max-w-xs"
-                            onChange={masks.currencyMask.onChange}
+                            className="input input-disabled w-full"
+                            disabled={true}
+                            value={formatCurrency(str_vlr_bruto | 0)}
                         />
                         <label className="label">
                             {errors.vlr_bruto && <span className="label-text-alt text-red-500">{errors.vlr_bruto.message}</span>}
@@ -344,12 +385,14 @@ const FreteFormPost: FC<FreteFormPostProps> = ({ submit, isEditing, initialValue
                         <label className="label">
                             <span className="label-text">Valor Líquido</span>
                         </label>
+                        <input type="hidden" {...register('vlr_liquido')} />
                         <input
                             type="text"
-                            {...register('vlr_liquido')}
-                            autoComplete='off'
-                            className="input input-bordered w-full"
+                            className="input input-disabled w-full"
+                            disabled={true}
+                            value={formatCurrency(str_vlr_liquido | 0)}
                         />
+
                         <label className="label">
                             {errors.vlr_liquido && <span className="label-text-alt text-red-500">{errors.vlr_liquido.message}</span>}
                         </label>
@@ -376,11 +419,12 @@ const FreteFormPost: FC<FreteFormPostProps> = ({ submit, isEditing, initialValue
                         <label className="label">
                             <span className="label-text">Valor de Comissão</span>
                         </label>
+                        <input type="hidden" {...register('vlr_comissao')} />
                         <input
                             type="text"
-                            {...register('vlr_comissao')}
-                            autoComplete='off'
-                            className="input input-bordered w-full"
+                            className="input input-disabled w-full"
+                            disabled={true}
+                            value={formatCurrency(str_vlr_comissao | 0)}
                         />
                         <label className="label">
                             {errors.vlr_comissao && <span className="label-text-alt text-red-500">{errors.vlr_comissao.message}</span>}
@@ -401,8 +445,6 @@ const FreteFormPost: FC<FreteFormPostProps> = ({ submit, isEditing, initialValue
                     </div>
                 </div>
 
-
-
                 <div className='flex flex-row gap-3 w-full  py-4'>
                     <button type='submit' className='btn btn-primary'>
                         <Save />{isEditing ? 'Salvar alteração' : 'Salvar novo registro'}
@@ -413,8 +455,7 @@ const FreteFormPost: FC<FreteFormPostProps> = ({ submit, isEditing, initialValue
                 </div>
 
             </form>
-
-            {/* <DevTool control={control} /> */}
+            <button type='reset' onClick={() => handleFreteCalculo()} className='btn'>Calcular</button>
         </FormProvider>
 
     )
